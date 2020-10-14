@@ -1,18 +1,21 @@
 /*global THREE*/
-let camera, FrontalCamera, TopCamera, LateralCamera;
+let camera, TopCamera/*1*/, PerspectiveCamera /*2*/ , MobileCamera /*3*/;
+
 let scene, renderer;
 let clock = new THREE.Clock();
-let mobile;
-let wireThickness = .1;
+let pool; /*variavel geral do objeto da cena*/
+let cueThickness = 0.6;
 let cameraRatio = 24;
 
 // Sets the z-axis as the top pointing one
 THREE.Object3D.DefaultUp.set(0, 0, 1);
 
-let objMaterial = new THREE.MeshBasicMaterial({color: 0xFF0000, wireframe: true});
-let estMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+let ballMaterial = new THREE.MeshBasicMaterial({color: 0xFF0000, wireframe: true});
+let cueMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+let tableMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
 
-function create_G3() {
+
+/*function create_G3() {
 	let comp1 = new Component();
 	let comp2 = new Component();
 
@@ -201,10 +204,13 @@ function create_G1() {
 	mobile.setBranchOne(comp2);
 
 	return mobile.branchOne();
-}
+}*/
 
-function createMobile() {
-	create_G1();
+function createPool() {
+	createPoolTable();
+	createCues();
+	createBallsFixed();
+	createBallsMoving();
 }
 
 function createCamera(x, y, z) {
@@ -229,20 +235,20 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
-	// scene.add(new THREE.AxesHelper(20));
+	scene.add(new THREE.AxesHelper(20));
 
- 	mobile = new Mobile(0, 0, 10);
-	createMobile();
-	scene.add(mobile);	
+ 	pool = new Pool(0, 0, 10);
+	createPool();
+	scene.add(pool);	
 }
 
 function animate() {
-	// Mobile animation functions
+	//  animation functions
 	let speed = 5;
 	let time = clock.getDelta();
 	let angSpeed = 1;
 
-	//rotate B1
+	/*//rotate B1
 	if (mobile.getRotationOne() === "rotateB1P") {
 		mobile.rotateBranchOneZ(angSpeed * time);
 	}
@@ -280,7 +286,7 @@ function animate() {
 	}
 	else if (mobile.getMotionY() === "left") {
 		mobile.moveLeft(time * speed);
-	}
+	}*/
 
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
@@ -308,24 +314,20 @@ function onResize() {
 function onKeyDown(e) {
 	switch (e.key) {
 		case "1":
-			camera = FrontalCamera;
-			onResize();
-			break;
-
-		case "2":
 			camera = TopCamera;
 			onResize();
 			break;
 
-		case "3":
-			camera = LateralCamera;
+		case "2":
+			camera = PerspectiveCamera;
 			onResize();
 			break;
 
-		case "4":
-			objMaterial.wireframe = !objMaterial.wireframe;
-			estMaterial.wireframe = !estMaterial.wireframe;
+		case "3":
+			camera = MobileCamera;
+			onResize();
 			break;
+
 
 		case "W":
 		case "w":
