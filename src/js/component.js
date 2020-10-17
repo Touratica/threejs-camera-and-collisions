@@ -7,6 +7,7 @@ class Component extends THREE.Object3D {
         this.material.wireframe = true;
         this.add(mesh);
         mesh.position.set(x, y, z);
+
     }
     
     addCylinderHorizontal(material, x, y, z, base, height) {
