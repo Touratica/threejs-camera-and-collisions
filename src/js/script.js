@@ -3,7 +3,8 @@ let camera, TopCamera/*1*/, PerspectiveCamera /*2*/ , MobileCamera /*3*/;
 
 let scene, renderer;
 let clock = new THREE.Clock();
-let pool; /*variavel geral do objeto da cena*/
+//let pool; /*variavel geral do objeto da cena*/
+let poolTable ;
 let cueThickness = 0.6;
 let cameraRatio = 24;
 
@@ -14,12 +15,17 @@ let ballMaterial = new THREE.MeshBasicMaterial({color: 0xFF0000, wireframe: true
 let cueMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
 let tableMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
 
-
+function createPoolTable()
+{
+	var pool = new PoolTable(0,0,0,tableMaterial);
+	return pool;
+}
 function createPool() {
-	createPoolTable();
-	createCues();
+	poolTable =createPoolTable();
+	scene.add(poolTable);
+	/*createCues();
 	createBallsFixed();
-	createBallsMoving();
+	createBallsMoving();*/
 }
 
 function createCameraTop(x, y, z) {
@@ -85,16 +91,18 @@ function createScene() {
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
 	scene.add(new THREE.AxesHelper(20));
 
- 	pool = new Pool(0, 0, 10);
 	createPool();
-	scene.add(pool);	
+	
+	
+		
+
 }
 
 function animate() {
 	//  animation functions
-	let speed = 5;
+/*	let speed = 5;
 	let time = clock.getDelta();
-	let angSpeed = 1;
+	let angSpeed = 1;*/
 
 
 	requestAnimationFrame(animate);
@@ -187,12 +195,15 @@ function __init__() {
 	document.body.appendChild(renderer.domElement);
 
 	createScene();
+	
 	TopCamera = createCameraTop(0, 0, 100);        //view from z
-
+	
 	PerspectiveCamera = createPerspectiveCamera(0, 100, 0);    //view from y
 	MobileCamera = createMobileCamera();    //view from ball
+	camera = TopCamera;
 
 	window.addEventListener("resize", onResize)
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
+	
 }

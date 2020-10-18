@@ -4,8 +4,8 @@ class Component extends THREE.Object3D {
         let geometry = new THREE.BoxGeometry(d, h, w);
         let mesh = new THREE.Mesh(geometry, material);
         this.material = material;
-        this.material.wireframe = true;
-        this.add(mesh);
+       // this.material.wireframe = true; erros aqui 
+        //this.add(mesh);
         mesh.position.set(x, y, z);
 
     }
