@@ -1,14 +1,17 @@
 class PoolTable extends Component {
-	constructor(x, y, z, innerDepth, innerWidth, innerHeight, outerHeight, wallThickness, holeRadius) {
+	constructor(x, y, z, innerDepth, innerWidth, outerHeight, wallThickness, ballRadius) {
 		super();
 		this.innerDepth = innerDepth;
 		this.innerWidth = innerWidth;
-		this.innerHeight = innerHeight;
+		this.innerHeight = outerHeight - 2 * ballRadius;
 		this.outerDepth = innerDepth + wallThickness;
 		this.outerWidth = innerWidth + wallThickness;
 		this.outerHeight = outerHeight;
-		this.holeRadius = holeRadius;
+		this.holeRadius = ballRadius * 3 / 2;
 		
+		this.addBase();
+		this.addFrame();
+
 		this.position.set(x, y, z);
 	}
 

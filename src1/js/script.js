@@ -15,6 +15,7 @@ let cue;
 
 let tableDepth = 20;
 let tableWidth = 40;
+let tableHeight = 10;
 let wallThickness = 0.5;
 
 let ballRadius = 1;
@@ -96,21 +97,20 @@ function createCues(){
 
 
 function createPool() {
-
-	pool = new PoolTable(0, 0, 0, table Depth, tableDepth,ballRadius,tableMaterial,wallThickness);
+	pool = new PoolTable(0, 0, 0, tableDepth, tableWidth, tableHeight, wallThickness, ballRadius);
 	scene.add(pool);
 }
 
 function select_cue(){
 //	cue.select();
 }
-function updateBalls()
+/*function updateBalls()
 {
 	for(let i =0;i<balls.length;i++)
 	{
 		if()
 	}
-}
+}*/
 
 function distance(x1,y1,x2,y2)
 {

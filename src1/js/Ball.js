@@ -10,9 +10,16 @@ class Ball extends Component{
         this.movement = true;
         this.rotationDirection = new THREE.Vector2(-1, 0);
         this.degrees = 0;
-        
+      /*  this.update = Balls => {
+            
+            for(let i =0;i<balls.length;i++)
+            {
+                if()
 
-    }
+            }
+        
+*/
+        }
 
     addBallAxis() {
         this.hasAxis = !this.hasAxis;
@@ -22,13 +29,7 @@ class Ball extends Component{
             this.remove(this.axis);
     }
 
-    function updateBalls()
-    {
-	for(let i =0;i<balls.length;i++)
-	{
-		if()
-	}
-}
+
 
 
 
