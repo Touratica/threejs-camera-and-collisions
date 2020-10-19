@@ -64,22 +64,26 @@ class PoolTable extends Component {
 		// Extrude the shape into a geometry, and create a mesh from it:
 		let extrudeSettings = {
 			steps: 1,
-			depth: innerHeight,
+			depth: this.innerHeight,
 			bevelEnabled: false,
 		};
 		let geom = new THREE.ExtrudeGeometry(table, extrudeSettings);
-		let mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: "green" }));
-		mesh.position.set(0, 0, -thistory.innerHeight / 2);
-		base.add(mesh);
-		this.addComponent(base, 0, 0, -this.outerHeight + this.innerHeight / 2);
+		
+		let meshGroup = new THREE.Group();
+		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "green", wireframe: false, side: THREE.BackSide})));
+		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "green", wireframe: false, side: THREE.FrontSide})));
+		meshGroup.position.set(0, 0, -this.innerHeight / 2);
+		base.add(meshGroup);
+
+		this.addComponent(base, 0, 0, -this.innerHeight / 2);
 	}
 
 	addFrame() {
 		// Create a table shape
 		let frame = new THREE.Shape();
 		frame.moveTo(-this.outerDepth / 2, -this.outerWidth / 2);
-		frame.lineTo(-this.OuterDepth / 2, this.outerWidth / 2);
-		frame.lineTo(this.OuterDepth / 2, this.outerWidth / 2);
+		frame.lineTo(-this.outerDepth / 2, this.outerWidth / 2);
+		frame.lineTo(this.outerDepth / 2, this.outerWidth / 2);
 		frame.lineTo(this.outerDepth / 2, -this.outerWidth / 2);
 		
 		// Adds top left hole
@@ -95,13 +99,17 @@ class PoolTable extends Component {
 			steps: 1,
 			depth: this.outerHeight,
 			bevelEnabled: false,
+			extrudeMaterial : 0
 		};
 		let geom = new THREE.ExtrudeGeometry(frame, extrudeSettings);
-		let mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: "brown" }))
-		mesh.position.set(0, 0, -this.outerHeight / 2);
+		let meshGroup = new THREE.Group();
+		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "saddlebrown", wireframe: false, side: THREE.BackSide})));
+		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "saddlebrown", wireframe: false, side: THREE.FrontSide})));
+		
+		meshGroup.position.set(0, 0, -this.outerHeight / 2);
 
 		let outerFrame = new Component();		
-		outerFrame.add(mesh);
-		this.addComponent(outerFrame, 0, 0, 0);
+		outerFrame.add(meshGroup);
+		this.addComponent(outerFrame, 0, 0, this.outerHeight / 2 - this.innerHeight);
 	}
 }
