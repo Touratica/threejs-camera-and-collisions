@@ -19,7 +19,7 @@ class PoolTable extends Component{
    
     create_walls(width, height,radius,material,wall_thickness){
 
-        var wall_Left = new Component();
+      /*  var wall_Left = new Component();
         wall_Left.addCuboid(material, 0, 0, 0, 2*radius, wall_thickness, height+ 2*wall_thickness); 
         this.addComponent(wall_Left, 0, -width/2 -wall_thickness/2 , -Ballradius+wall_thickness);
 
@@ -39,7 +39,7 @@ class PoolTable extends Component{
         this.walls.push(wall_Left); //parede esquerda
         this.walls.push(wall_Up); //parede cima
         this.walls.push(wall_Right); //parede direita
-        this.walls.push(wall_Down); //parede baixo
+        this.walls.push(wall_Down); //parede baixo */
     }
 
     create_receptacles(width, height, radius, material){

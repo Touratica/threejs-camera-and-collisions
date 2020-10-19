@@ -104,13 +104,83 @@ function createPool() {
 function select_cue(){
 //	cue.select();
 }
-/*function updateBalls()
+
+function rotate(velocity, angle) {
+    var rotatedVelocities = {
+        x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+        y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+    };
+
+    return rotatedVelocities;
+}
+
+function resolveCollision(ball, otherball) {
+    var xVelocityDiff = ball.velocity.x - otherball.velocity.x;
+    var yVelocityDiff = ball.velocity.y - otherball.velocity.y;
+
+    var xDist = otherball.x - ball.x;
+    var yDist = otherball.y - ball.y;
+
+    
+    if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+
+        // Angle between two balls
+        var angle = -Math.atan2(otherball.y - ball.y, otherball.x - ball.x);
+
+        // Store mass in var for better readability in collision equation
+        const m1 = particle.mass;
+        const m2 = otherParticle.mass;
+
+        // Velocity before equation
+        const u1 = rotate(ball.velocity, angle);
+        const u2 = rotate(otherball.velocity, angle);
+
+        // Velocity after 1d collision equation
+       const v1 = { x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y };
+       const v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y };
+
+        // Final velocity after rotating axis back to original location
+       	const vFinal1 = rotate(v1, -angle);
+        const vFinal2 = rotate(v2, -angle);
+
+        // Swap particle velocities for realistic bounce effect
+        ball.velocity.x = vFinal1.x;
+       	ball.velocity.y = vFinal1.y;
+
+        otherball.velocity.x = vFinal2.x;
+        otheball.velocity.y = vFinal2.y;
+    }
+}
+
+function updateBalls()
 {
 	for(let i =0;i<balls.length;i++)
 	{
-		if()
+		for(let j = 0; j<balls.length; j++)
+		{
+			 if(balls[i]===balls[j]) continue;
+			 if(distance(balls[i].position.x,balls[i].position.y,balls[j].position.x,
+				balls[j].position.y) - ballRadius*2<0)
+				{
+					/*Ha colisao!!*/
+					resolveCollision(balls[i],balls[j]);
+				}	
+		}
+		if(balls[i].position.x - ballRadius < -tableDepth/2 || balls[i].position.x + ballRadius > tableDepth/2)
+		{
+			balls[i].velocity.x = -balls[i].velocity.x;
+		}
+
+		if(balls[i].position.y - ballRadius < -tableWidth/2 || balls[i].position.y + ballRadius > tableWidth/2)
+		{
+			balls[i].velocity.y = -balls[i].velocity.y;
+		}
+		balls[i].position.x += balls[i].velocity.x*0.1;
+		balls[i].position.y += balls[i].velocity.y*0.1;
+
 	}
-}*/
+
+}
 
 function distance(x1,y1,x2,y2)
 {
@@ -147,9 +217,9 @@ function createInitialBalls() {
 		
 				}
 			}
-		} //testar! 
+		} 
 		
-		balls[i]= new Ball(position_x,position_y,wallThickness,ballRadius,ballMaterial,velocity)
+		balls[i]= new Ball(position_x,position_y,wallThickness,ballRadius,ballMaterial)
 		
 		scene.add(balls[i]);
 		balls[i].addBallAxis();
@@ -222,7 +292,7 @@ function createScene() {
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
 	scene.add(new THREE.AxesHelper(20));
 
-	createPool();
+	//createPool();
 
 	createCues();
 	createInitialBalls();
@@ -234,29 +304,15 @@ function animate() {
 	//  animation functions
 	let speed = 5;
 	let angSpeed = 1;
-
-	select_cue();
-/*	for (var i = 0; i < balls.length; i++) {
-        var aux = balls[i];
-        if (aux.getMovement()) {
-            aux.updatePosition();
-            
-
-
-        if (aux.position.x > 165 && (!aux.getMoving() || aux.getXVelocity() > 0)) {
-            if (i == 3)
-                specialBall = cannon[0];
-
-            balls.splice(i, 1);
-            scene.remove(aux);
-            var x = balls[currentCannon].position.x
-            var y = balls[currentCannon].position.y
-            var z = balls[currentCannon].position.z
-            camera[2] = createCamera(x + 60, y + 4, z + 10, 1);
-        }
-
-*/
+	
 	requestAnimationFrame(animate);
+	/*balls.forEach(ball => {
+		ball.update(balls);
+	});*/
+	updateBalls();
+	select_cue();
+
+	
 	renderer.render(scene, camera);
 }
 
