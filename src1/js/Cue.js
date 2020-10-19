@@ -1,29 +1,29 @@
 class Cue extends Component{
 
-    selected = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
-    unselected = new THREE.MeshBasicMaterial({color: 0x00F000, wireframe: true});
+    selected = new THREE.MeshBasicMaterial({color: 0x66ff33, wireframe: true});
+    unselected = new THREE.MeshBasicMaterial({color: 0xcc9966, wireframe: true});
 
     constructor(x, y, z,angle,baseD,baseU,height) {
 
         super(x, y, z);
 
-        this.addCylinderHorizontal(this.selected,0,0,0,baseD,baseU,height);
+        this.cue_mesh = this.addCylinderHorizontal(this.unselected,0,0,0,baseD,baseU,height);
 
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
-       // this.material = mat;
+
         this.rotateZ(angle);
 
         
     }
 
     unselect(){
-        this.material = this.selected;
+        this.cue_mesh.material = this.unselected;
     }
     
     select(){
-        this.material = this.unselected;
+        this.cue_mesh.material = this.selected;
     }
 
 }

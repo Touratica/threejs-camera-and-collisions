@@ -86,10 +86,10 @@ function createCues(){
 			
 		}
 
-		var cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight);
+		var new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight);
 		
-		scene.add(cue);
-		cues.push(cue);
+		scene.add(new_cue);
+		cues.push(new_cue);
 	}
 
 	cue = cues[0];
@@ -101,8 +101,10 @@ function createPool() {
 	scene.add(pool);
 }
 
-function select_cue(){
-//	cue.select();
+function select_cue(n){
+	cue.unselect();
+	cue = cues[n];
+	cue.select();
 }
 
 function rotate(velocity, angle) {
@@ -310,7 +312,6 @@ function animate() {
 		ball.update(balls);
 	});*/
 	updateBalls();
-	select_cue();
 
 	
 	renderer.render(scene, camera);
@@ -353,30 +354,24 @@ function onKeyDown(e) {
 			break;
 		
 		case "4":
-			cue.unselect();
-			cue = cue[0];
+			select_cue(0);
 			break;
 
 		case "5":
-			cue.unselect();
-			cue = cue[1];
+			select_cue(1);
 			break;
 		
 		case "6":
-			cue.unselect();
-			cue = cue[2];
+			select_cue(2);
 			break;
 		case "7":
-			cue.unselect();
-			cue = cue[3];
+			select_cue(3);
 			break;
 		case "8":
-			cue.unselect();
-			cue = cue[4];
+			select_cue(4);
 			break;
 		case "9":
-			cue.unselect();ret
-			cue = cue[5];
+			select_cue(5);
 			break;	
 
 

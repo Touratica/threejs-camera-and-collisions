@@ -9,7 +9,7 @@ class Component extends THREE.Object3D {
        // this.material.wireframe = true;
         this.add(mesh);
         mesh.position.set(x, y, z);
-
+        return mesh;
     }
     
     addCylinderHorizontal(material, x, y, z, baseD, baseU,height) {
@@ -19,6 +19,7 @@ class Component extends THREE.Object3D {
         this.material.wireframe = true;
         this.add(mesh);
         mesh.position.set(x, y, z);
+        return mesh;
     }
 
     addSphere(material, x, y,z, radius)
@@ -29,6 +30,7 @@ class Component extends THREE.Object3D {
         this.material.wireframe= true;
         this.add(mesh);
         mesh.position.set(x,y,z);
+        return mesh;
     }
     
 
