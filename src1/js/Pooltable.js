@@ -16,11 +16,9 @@ class PoolTable extends Component{
         this.position.z = z;
         this.direction = new THREE.Vector2(0, 0);
     }
-    //var sizeB = 17; //comprimento do retangulo de baixo/cima
-    //sizeS = 8 //comprimento do pequeno 
-
+   
     create_walls(width, height,radius,material,wall_thickness){
-        //necessario depois confirmar contas , e possivel que w e d estejam trocados
+
         var wall_Left = new Component();
         wall_Left.addCuboid(material, 0, 0, 0, 2*radius, wall_thickness, height+ 2*wall_thickness); 
         this.addComponent(wall_Left, 0, -width/2 -wall_thickness/2 , -Ballradius+wall_thickness);

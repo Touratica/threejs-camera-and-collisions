@@ -1,10 +1,12 @@
 'use strict';
 class Component extends THREE.Object3D {
+    
+
     addCuboid(material, x, y, z, w, h, d) {
         let geometry = new THREE.BoxGeometry(d, h, w);
         let mesh = new THREE.Mesh(geometry, material);
         this.material = material;
-        this.material.wireframe = true;
+       // this.material.wireframe = true;
         this.add(mesh);
         mesh.position.set(x, y, z);
 
