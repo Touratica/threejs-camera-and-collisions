@@ -9,16 +9,14 @@ class PoolTable extends Component {
 		this.outerHeight = outerHeight;
 		this.holeRadius = ballRadius * 3 / 2;
 		
-		this.addBase();
+		this.addTableTop();
 		this.addFrame();
 
 		this.position.set(x, y, z);
 	}
 
-	addBase() {
-		let base = new Component();
-
-		// Create a table shape
+	addTableTop() {
+		// Create a table top shape
 		let table = new THREE.Shape();
 		table.moveTo(-this.innerDepth / 2, -this.innerWidth / 2);
 		table.lineTo(-this.innerDepth / 2, this.innerWidth / 2);
@@ -68,25 +66,25 @@ class PoolTable extends Component {
 			bevelEnabled: false,
 		};
 		let geom = new THREE.ExtrudeGeometry(table, extrudeSettings);
-		
-		let meshGroup = new THREE.Group();
-		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "green", wireframe: false, side: THREE.BackSide})));
-		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "green", wireframe: false, side: THREE.FrontSide})));
-		meshGroup.position.set(0, 0, -this.innerHeight / 2);
-		base.add(meshGroup);
+
+		let mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "green", wireframe: false, side: THREE.DoubleSide}));
+		mesh.position.set(0, 0, -this.innerHeight / 2);
+
+		let base = new Component();
+		base.add(mesh);
 
 		this.addComponent(base, 0, 0, -this.innerHeight / 2);
 	}
 
 	addFrame() {
-		// Create a table shape
+		// Create the table frame outer shape
 		let frame = new THREE.Shape();
 		frame.moveTo(-this.outerDepth / 2, -this.outerWidth / 2);
 		frame.lineTo(-this.outerDepth / 2, this.outerWidth / 2);
 		frame.lineTo(this.outerDepth / 2, this.outerWidth / 2);
 		frame.lineTo(this.outerDepth / 2, -this.outerWidth / 2);
 		
-		// Adds top left hole
+		// Removes inside of frame
 		let hole = new THREE.Path();
 		hole.moveTo(-this.innerDepth / 2, -this.innerWidth / 2);
 		hole.lineTo(-this.innerDepth / 2, this.innerWidth / 2);
@@ -98,18 +96,15 @@ class PoolTable extends Component {
 		let extrudeSettings = {
 			steps: 1,
 			depth: this.outerHeight,
-			bevelEnabled: false,
-			extrudeMaterial : 0
+			bevelEnabled: false
 		};
 		let geom = new THREE.ExtrudeGeometry(frame, extrudeSettings);
-		let meshGroup = new THREE.Group();
-		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "saddlebrown", wireframe: false, side: THREE.BackSide})));
-		meshGroup.add(new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "saddlebrown", wireframe: false, side: THREE.FrontSide})));
-		
-		meshGroup.position.set(0, 0, -this.outerHeight / 2);
+		let mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: "saddlebrown", wireframe: false, side: THREE.DoubleSide}));
+
+		mesh.position.set(0, 0, -this.outerHeight / 2);
 
 		let outerFrame = new Component();		
-		outerFrame.add(meshGroup);
+		outerFrame.add(mesh);
 		this.addComponent(outerFrame, 0, 0, this.outerHeight / 2 - this.innerHeight);
 	}
 }
