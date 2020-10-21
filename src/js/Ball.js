@@ -2,13 +2,14 @@ class Ball extends Component {
 	constructor(radius, poolTable, x, y,material,velocity) {
 		super();
 		this.radius = radius;
-		this.position.set(x, y, this.radius);
+        this.position.set(x, y, this.radius); //fix balls z ; they are swimming
+            //in the pool
         this.velocity = velocity;
 
         this.mass = 1;
 		this.poolTable = poolTable;
-		this.ball = this.addSphere(material,0,0,0,this.radius);
-        
+        this.ball = this.addSphere(material,0,0,0,this.radius);
+ 
 		//this.axes = new THREE.AxesHelper(this.radius * 5);
         //this.add(this.axes);
         this.hasAxis = false;
@@ -56,14 +57,20 @@ class Ball extends Component {
 			this.rotateX(-(2 * distance - velocityY) / this.radius);
 			this.velocity.y = -this.velocity.y * this.poolTable.wallCOR;
         }
+        if(Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01)
+        {
+            this.velocity.x = 0;
+            this.velocity.y =0;
+        }
         
         
 
 		if (hasCollided) {
 			return;
 		}
+       
 
-		this.position.x += velocityX;
+		this.position.x += velocityX ;
 		this.rotateY(velocityX / this.radius);
 		this.position.y += velocityY;
 		this.rotateX(-velocityY / this.radius);
@@ -86,11 +93,7 @@ class Ball extends Component {
         let xDist = otherBall.position.x - ball.position.x;
         let yDist = otherBall.position.y - ball.position.y;
 
-        console.log("o xDist e" , xDist);
-        console.log("o yDist e" , yDist);
-
-        console.log("numero do diabo");
-        console.log(xVelocityDiff * xDist + yVelocityDiff * yDist);
+        
     
             if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
                 console.log("ok");
@@ -125,9 +128,7 @@ class Ball extends Component {
     }
 	update(timeDelta,balls,size) {
         this.move(timeDelta);
-       // console.log("aftermove");
-        //console.log(size);
-        for(i=0;i<size;i++)
+       for(i=0;i<size;i++)
         {
            // console.log("for");
             if(this == balls[i])
@@ -136,8 +137,7 @@ class Ball extends Component {
                 continue;
                 
             }
-           // console.log("distancia");
-           // console.log(this.distanceToBall(balls[i].position.x,balls[i].position.y) );
+         
             if(this.distanceToBall(balls[i].position.x,balls[i].position.y) - this.radius * 2 <= 0) /*two balls have colided*/
            {
                 console.log("colision!!");

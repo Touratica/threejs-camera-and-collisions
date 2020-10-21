@@ -93,7 +93,7 @@ function createCues(){
 
 		var new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight,ballRadius,wallThickness,poolTable);
 		
-		scene.add(new_cue.get_ball());
+		scene.add(new_cue.get_steady_ball());
 		scene.add(new_cue);
 		cues.push(new_cue);
 	}
@@ -170,9 +170,6 @@ function createPerspectiveCamera(x,y,z){
 	else {
 		cameraRatio = window.innerWidth / 120;
 	}
-	/*camera = new THREE.PerspectiveCamera( window.innerWidth / -(2 * cameraRatio),
-	window.innerWidth / (2 * cameraRatio), window.innerHeight / (2 * cameraRatio),
-	window.innerHeight / -(2 * cameraRatio), 0, 1000 );*/
 
 	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
 	camera.position.x = x;
@@ -183,30 +180,35 @@ function createPerspectiveCamera(x,y,z){
 }
 
 function createMobileCamera(){
-	if (window.innerWidth / window.innerHeight > 2.64) {  //...
+	if (window.innerWidth / window.innerHeight > 2.64) {
 		cameraRatio = window.innerHeight / 25;
 	}
 	else {
-		cameraRatio = window.innerWidth / 60;
+		cameraRatio = window.innerWidth / 120;
 	}
-	camera = new THREE.PerspectiveCamera( window.innerWidth / -(2 * cameraRatio),
-	window.innerWidth / (2 * cameraRatio), window.innerHeight / (2 * cameraRatio),
-	window.innerHeight / -(2 * cameraRatio), 0, 1000 );
 
-    /*camera.position.set(currentBall.position.x, currentBall.position.y, currentBall.position.z);*/
-    //camera.lookAt();
+	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
 	
 	return camera;
 }
 
+function updateMobileCamera(){
+	camera.position.x = cue.get_ball_shooted().position.x - ballRadius;
+	camera.position.y = cue.get_ball_shooted().position.y - ballRadius;
+	camera.position.z = cue.get_ball_shooted().position.z + ballRadius/2;
+
+    camera.lookAt(cue.get_ball_shooted().position);
+}
+
+
 function createScene() {
 	scene = new THREE.Scene();
-
+	
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
 	scene.add(new THREE.AxesHelper(20));
 	poolTable = createTable();
 	scene.add(poolTable);
-
+	//camera = TopCamera;
 	createCues();
 	createInitialBalls();
 	//createBallsFixed();
@@ -221,6 +223,7 @@ function createScene() {
 
 function animate() {
 	//  animation functions
+
 	let angSpeed = 1;
 
 	let timeDelta = clock.getDelta();
@@ -235,12 +238,14 @@ function animate() {
 	}
 
 	if(cue.get_shoot()){
-		var e =cue.shoot_ball();
+		var e = cue.shoot_ball();
 		scene.add(e);
 		balls.push(e);
 	}
 	
 	balls.forEach(ball => ball.update(timeDelta,balls,balls.length));
+	
+	if(camera ==MobileCamera) updateMobileCamera();
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
@@ -346,11 +351,13 @@ function __init__() {
 	document.body.appendChild(renderer.domElement);
 
 	createScene();
-	TopCamera = createCameraTop(0, 0, 100);        //view from z
 
-	PerspectiveCamera = createPerspectiveCamera(50, 20, 20); 
+	PerspectiveCamera = createPerspectiveCamera(40, 35, 30); 
 	MobileCamera = createMobileCamera();    //view from ball
-
+	TopCamera = createCameraTop(0, 0, 100);        //view from z
+	
+	
+	
 	window.addEventListener("resize", onResize)
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);

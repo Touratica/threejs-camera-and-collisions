@@ -28,7 +28,9 @@ class Cue extends Component{
         this.cue_mesh = this.addCylinderHorizontal(this.unselected,cue_x,cue_y,0,baseD,baseU,height);
 
         this.cue_mesh.rotateZ(angle);
-        this.ball = new Ball(this.ball_radius, poolTable, x, y,this.unselected,new THREE.Vector3( 0, 0, 0 ));
+        this.steady_ball = new Ball(this.ball_radius, poolTable, x, y,this.unselected,new THREE.Vector3( 0, 0, 0 ));
+
+        this.shooted_ball = this.steady_ball;
 
         this.position.x = x;
         this.position.y = y;
@@ -42,6 +44,7 @@ class Cue extends Component{
 
         this.shoot = false;
 
+
         
     }
 
@@ -52,15 +55,21 @@ class Cue extends Component{
 
         vector.rotateAround (center, this.angle + this.initial_angle); 
 
-        var ball_to_be_shoot = new Ball(this.ball.radius,this.pool,this.ball.position.x, this.ball.position.y,new THREE.MeshBasicMaterial({color: "red"}), new THREE.Vector3( vector.x * 10, vector.y * 10, 0 ));
-        ball_to_be_shoot.addBallAxis();
+        this.shooted_ball = new Ball(this.steady_ball.radius,this.pool,this.steady_ball.position.x, this.steady_ball.position.y,new THREE.MeshBasicMaterial({color: "red"}), new THREE.Vector3( vector.x * 10, vector.y * 10, 0 ));
 
+        this.shooted_ball.addBallAxis();
+        this.shooted_ball;
         this.shoot = false;
-        return ball_to_be_shoot;
+
+        return this.shooted_ball;
     }
 
-    get_ball(){
-        return this.ball;
+    get_steady_ball(){
+        return this.steady_ball;
+    }
+
+    get_ball_shooted(){
+        return this.shooted_ball;
     }
 
     unselect(){
