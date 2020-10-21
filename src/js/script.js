@@ -138,7 +138,7 @@ function createInitialBalls() {
 			}
 		}
 		
-		balls[i]= new Ball(ballRadius,poolTable,positionX,positionY,ballMaterial);
+		balls[i]= new Ball(ballRadius,poolTable,positionX,positionY,ballMaterial, new THREE.Vector3( (Math.random() + 20) * 1, (Math.random() + 20) * 1, 0)) ;
 		scene.add(balls[i]);
 		balls[i].addBallAxis();
 		poolTable.add(balls[i]);
@@ -226,12 +226,12 @@ function animate() {
 	let timeDelta = clock.getDelta();
 
 	if(cue.get_rotation()== "Left"){
-		cue.rotate_z(-angSpeed*timeDelta);
+		cue.rotate_z(angSpeed*timeDelta);
 	}
 
 	if(cue.get_rotation()== "Right"){
-		cue.rotate_z(angSpeed*timeDelta);
-		console.log(angSpeed*timeDelta);
+		cue.rotate_z(-angSpeed*timeDelta);
+		
 	}
 
 	if(cue.get_shoot()){
@@ -239,8 +239,8 @@ function animate() {
 		scene.add(e);
 		balls.push(e);
 	}
-
-	balls.forEach(ball => ball.update(timeDelta,balls));
+	
+	balls.forEach(ball => ball.update(timeDelta,balls,balls.length));
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);

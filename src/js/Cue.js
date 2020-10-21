@@ -11,18 +11,7 @@ class Cue extends Component{
         
         var cue_x, cue_y;
 
-        this.inverted = true; //If angle = 0 || PI
-
-        if (Math.abs(angle) == Math.PI || angle == 0 ){ 
-            this.inverted = true;
-        }
-
-        else {
-            this.inverted = false;
-        }
-
-
-        if (this.inverted) 
+        if (Math.abs(angle) == Math.PI || angle == 0) 
         { 
             console.log("inverted");
             cue_x = - Math.sin(angle) * ((height + ballRadius)/2 + wall_thickness);
@@ -39,7 +28,7 @@ class Cue extends Component{
         this.cue_mesh = this.addCylinderHorizontal(this.unselected,cue_x,cue_y,0,baseD,baseU,height);
 
         this.cue_mesh.rotateZ(angle);
-        this.ball = new Ball(this.ball_radius, poolTable, x, y,this.unselected);
+        this.ball = new Ball(this.ball_radius, poolTable, x, y,this.unselected,new THREE.Vector3( 0, 0, 0 ));
 
         this.position.x = x;
         this.position.y = y;
@@ -58,11 +47,13 @@ class Cue extends Component{
 
     shoot_ball(){
 
-        var ball_to_be_shoot = new Ball(this.ball.radius,this.pool,this.ball.position.x, this.ball.position.y,new THREE.MeshBasicMaterial({color: "red"}));
-        var ball_pos = new THREE.Vector2( this.position.x,this.position.y);
+        var center = new THREE.Vector2(0,0);
         var vector = new THREE.Vector2( 0, 1 );
-        vector.rotateAround (ball_pos, this.angle + this.initial_angle); 
-        ball_to_be_shoot.set_velocity(vector.x,vector.y);
+
+        vector.rotateAround (center, this.angle + this.initial_angle); 
+
+        var ball_to_be_shoot = new Ball(this.ball.radius,this.pool,this.ball.position.x, this.ball.position.y,new THREE.MeshBasicMaterial({color: "red"}), new THREE.Vector3( vector.x * 10, vector.y * 10, 0 ));
+        ball_to_be_shoot.addBallAxis();
 
         this.shoot = false;
         return ball_to_be_shoot;
@@ -99,11 +90,11 @@ class Cue extends Component{
 
     rotate_z(angle){
 
-        if (this.angle >= (Math.PI)/3 && this.rotate_z == "Right"){
+        if (this.angle >= (Math.PI)/3 && this.rotate_z == "Left"){
             return;
         }
 
-        if (this.angle >= -(Math.PI)/3 && this.rotate_z == "Left"){
+        if (this.angle >= -(Math.PI)/3 && this.rotate_z == "Right"){
             return;
         }
 
