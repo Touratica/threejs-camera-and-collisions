@@ -30,11 +30,13 @@ let time = clock.getDelta();
 THREE.Object3D.DefaultUp.set(0, 0, 1);
 
 let ballMaterial = new THREE.MeshBasicMaterial({color: "red"});
+
+//function to generate random numbers
 function randFloat(low, high) {
 	return low + Math.random() * ( high - low );
 }
 
-
+//distance between two points
 function distance(x1, y1, x2, y2) {
 	let xDistance = x2 - x1;
 	let yDistance = y2 - y1;
@@ -86,7 +88,7 @@ function createCues(){
 
 		let new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight,ballRadius,wallThickness,poolTable);
 		
-		scene.add(new_cue.get_steady_ball());
+		//scene.add(new_cue.get_steady_ball());
 		scene.add(new_cue);
 		cues.push(new_cue);
 	}
@@ -111,20 +113,22 @@ function createInitialBalls() {
 	let positionY;
 
 	for (let i = 0; i < numbBalls; i++) {
-		positionY = randFloat(-tableWidth / 2 + wallThickness + ballRadius / 2,
-			tableWidth / 2 - wallThickness - ballRadius / 2);
-		positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
-			tableDepth / 2 - wallThickness - ballRadius / 2);
-		if (i !== 0) {
-			//ciclo para comparar se a nova posicao da bola nao coincide com a
-			//posicao de outra bola
+		/*random position in the table pool*/
+		positionY = randFloat(-tableWidth / 2 + ballRadius / 2,
+			tableWidth / 2  - ballRadius / 2);
+		positionX = randFloat(-tableDepth / 2  + ballRadius / 2,
+			tableDepth / 2  - ballRadius / 2);
+
+			if (i !== 0) {
+			
+			//cicle to compare if the new position of the ball is not the same as other ball
 			for (let j = 0; j < balls.length; j++) {
 				if (distance(positionX, positionY, balls[j].position.x, balls[j].position.y) < ballRadius * 2) {
 					positionY = randFloat(-tableWidth / 2 + wallThickness + ballRadius / 2,
 						tableWidth / 2 - wallThickness - ballRadius / 2);
 					positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
 								tableDepth / 2 - wallThickness - ballRadius / 2);
-					j -- ; //renova o ciclo para confirmar novamente
+					j -- ; //does the cicle again to check again
 				}
 			}
 		}
@@ -175,7 +179,7 @@ function createMobileCamera(){
 	
 	return camera;
 }
-
+/*mobile camera that follows shooted ball*/
 function updateMobileCamera(){
 	camera.position.x = cue.get_ball_shooted().position.x - ballRadius;
 	camera.position.y = cue.get_ball_shooted().position.y - ballRadius;
@@ -189,7 +193,7 @@ function createScene() {
 	scene = new THREE.Scene();
 	
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
-	scene.add(new THREE.AxesHelper(30));
+	//scene.add(new THREE.AxesHelper(30));
 	poolTable = createTable();
 	scene.add(poolTable);
 
@@ -234,7 +238,7 @@ function onResize() {
 
 	if (window.innerHeight > 0 && window.innerWidth > 0) {
 		if (camera === TopCamera) {
-		// Adjusts camera ratio so the mobile would be totally visible in its starting position
+		// Adjusts camera ratio so the pool would be totally visible
 			if (window.innerWidth / window.innerHeight > 1.2725) {
 				cameraRatio = window.innerHeight / 150;
 			}
@@ -321,7 +325,7 @@ function __init__() {
 
 	createScene();
 
-	PerspectiveCamera = createPerspectiveCamera(40, 40, 40);
+	PerspectiveCamera = createPerspectiveCamera(40, 40, 40); //perspective view
 	MobileCamera = createMobileCamera();    //view from ball
 	TopCamera = createCameraTop(0, 0, 100);        //view from z	
 	

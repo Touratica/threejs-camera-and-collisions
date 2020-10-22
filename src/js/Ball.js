@@ -14,6 +14,7 @@ class Ball extends Component {
         this.isFalling = false;
     }
     
+    //adds a axis to a ball
     addBallAxis() {
         this.hasAxis = !this.hasAxis;
         if (this.hasAxis)
@@ -22,6 +23,7 @@ class Ball extends Component {
             this.remove(this.axis);
     }
 
+    //distance between two balls
     distanceToBall(ball_x, ball_y) {
         let xDistance = ball_x - this.position.x;
         let yDistance = ball_y - this.position.y;
@@ -29,6 +31,7 @@ class Ball extends Component {
         return Math.sqrt(Math.pow(xDistance,2) + Math.pow(yDistance,2));
     }
 
+    //motion function of balls through time
 	move(timeDelta) {
 		this.velocity.x *= this.poolTable.drag;
 		this.velocity.y *= this.poolTable.drag;
@@ -71,11 +74,12 @@ class Ball extends Component {
                 return;
             }
         }
-        else {
+        else { //ball fell in tho the hole
             this.position.z += velocityZ;
             this.velocity.z -= 10;
+           
         }
-
+        //update position of balls
 		this.position.x += velocityX ;
 		this.rotateY(velocityX / this.radius);
 		this.position.y += velocityY;
@@ -99,8 +103,8 @@ class Ball extends Component {
         let xDistance = other.position.x - ball.position.x;
         let yDistance = other.position.y - ball.position.y;
     
-            if (xVelocityDelta * xDistance + yVelocityDelta * yDistance >= 0) {
-    
+            //condition to prevent a run over off balls
+           if (xVelocityDelta * xDistance + yVelocityDelta * yDistance >= 0) {
             // Angle between two balls
             let angle = -Math.atan2(yDistance, xDistance);
     
@@ -120,7 +124,7 @@ class Ball extends Component {
 
             //Final velocity in 1D - Other
             let finalVelocity_Other = {
-                x: initialVelocity_Other.x * (m1 - m2) / (m1 + m2) + initialVelocity_Ball.x * 2 * m2 / (m1 + m2), 
+                x: initialVelocity_Other.x * (m1 - m2) / (m1 + m2) + initialVelocity_Ball.x * 2 * m1 / (m1 + m2), //fixed here m1, instead of m2 
                 y: initialVelocity_Other.y };
     
 
@@ -150,8 +154,9 @@ class Ball extends Component {
                 continue;   
             }
          
-            if(this.distanceToBall(balls[i].position.x,balls[i].position.y)  <= this.radius * 2) /*two balls have colided*/
-           {
+            if(this.distanceToBall(balls[i].position.x,balls[i].position.y)  <= this.radius * 2) 
+            /*two balls have colided*/
+            {
                 this.resolveCollision(this,balls[i]);
 
                 let velocityX = this.velocity.x * timeDelta;

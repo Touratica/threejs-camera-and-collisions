@@ -13,7 +13,7 @@ class Cue extends Component{
 
         if (Math.abs(angle) == Math.PI || angle == 0) 
         { 
-            console.log("inverted");
+        
             cue_x = - Math.sin(angle) * ((height + ballRadius)/2 + wall_thickness);
             cue_y = - Math.cos(angle) * ((height + ballRadius)/2 + wall_thickness);
         }
