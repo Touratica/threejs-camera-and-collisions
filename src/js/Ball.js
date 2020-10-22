@@ -102,9 +102,8 @@ class Ball extends Component {
             if (xVelocityDelta * xDistance + yVelocityDelta * yDistance >= 0) {
     
             // Angle between two balls
-            let angle = -Math.atan2(other.position.y - ball.position.y, other.position.x - ball.position.x);
+            let angle = -Math.atan2(yDistance, xDistance);
     
-
             let m1 = ball.mass;
             let m2 = other.mass;
                 
