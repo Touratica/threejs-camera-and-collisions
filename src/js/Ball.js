@@ -50,7 +50,7 @@ class Ball extends Component {
                 // The first point has its y at the center and the second its x
                 let centerX = hole[1].x;
                 let centerY = hole[0].y;
-                if (Math.abs(this.position.x - centerX) < this.radius && Math.abs(this.position.y - centerY) < this.radius) {
+                if (Math.abs(this.position.x - centerX) < this.radius * 1.5 && Math.abs(this.position.y - centerY) < this.radius * 1.5) {
                     this.velocity.z -= 10;
                     this.isFalling = true;
                     return;

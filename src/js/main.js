@@ -155,13 +155,6 @@ function createCameraTop(x, y, z) {
 }
 
 function createPerspectiveCamera(x, y, z) {
-	if (window.innerWidth / window.innerHeight > 2.64) {
-		cameraRatio = window.innerHeight / 25;
-	}
-	else {
-		cameraRatio = window.innerWidth / 120;
-	}
-
 	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
 	camera.position.x = x;
 	camera.position.y = y;
@@ -239,19 +232,24 @@ function animate() {
 function onResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
-	// Adjusts camera ratio so the mobile would be totally visible in its starting position
 	if (window.innerHeight > 0 && window.innerWidth > 0) {
-		if (window.innerWidth / window.innerHeight > 1.2725) {
-			cameraRatio = window.innerHeight / 150;
+		if (camera === TopCamera) {
+		// Adjusts camera ratio so the mobile would be totally visible in its starting position
+			if (window.innerWidth / window.innerHeight > 1.2725) {
+				cameraRatio = window.innerHeight / 150;
+			}
+			else {
+				cameraRatio = window.innerWidth / 190;
+			}
+			camera.left = window.innerWidth / -(2 * cameraRatio);
+			camera.right = window.innerWidth / (2 * cameraRatio);
+			camera.top = window.innerHeight / (2 * cameraRatio);
+			camera.bottom = window.innerHeight / -(2 * cameraRatio);
 		}
 		else {
-			cameraRatio = window.innerWidth / 190;
+			camera.aspect = renderer.getSize(new THREE.Vector2()).width / renderer.getSize(new THREE.Vector2()).height;
 		}
-		camera.left = window.innerWidth / -(2 * cameraRatio);
-		camera.right = window.innerWidth / (2 * cameraRatio);
-		camera.top = window.innerHeight / (2 * cameraRatio);
-		camera.bottom = window.innerHeight / -(2 * cameraRatio);
- 	}
+	}
 	camera.updateProjectionMatrix();
 }
 
@@ -325,19 +323,9 @@ function __init__() {
 
 	PerspectiveCamera = createPerspectiveCamera(40, 40, 40);
 	MobileCamera = createMobileCamera();    //view from ball
-	TopCamera = createCameraTop(0, 0, 100);        //view from z
-	
-	
+	TopCamera = createCameraTop(0, 0, 100);        //view from z	
 	
 	window.addEventListener("resize", onResize)
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
-
-
-	
-
-
-	
-
-	
 }
