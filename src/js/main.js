@@ -119,12 +119,12 @@ function createInitialBalls() {
 			//ciclo para comparar se a nova posicao da bola nao coincide com a
 			//posicao de outra bola
 			for (let j = 0; j < balls.length; j++) {
-				if (distance(positionX, positionY, balls[j].position.x, balls[j].position.y) - ballRadius * 2 < 0) {
+				if (distance(positionX, positionY, balls[j].position.x, balls[j].position.y) < ballRadius * 2) {
 					positionY = randFloat(-tableWidth / 2 + wallThickness + ballRadius / 2,
 						tableWidth / 2 - wallThickness - ballRadius / 2);
 					positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
 								tableDepth / 2 - wallThickness - ballRadius / 2);
-					j = -1; //renova o ciclo para confirmar novamente
+					j -- ; //renova o ciclo para confirmar novamente
 				}
 			}
 		}
@@ -192,10 +192,10 @@ function createScene() {
 	scene.add(new THREE.AxesHelper(30));
 	poolTable = createTable();
 	scene.add(poolTable);
-	//camera = TopCamera;
+
 	createCues();
 	createInitialBalls();
-	//createBallsFixed();
+
 }
 
 function animate() {

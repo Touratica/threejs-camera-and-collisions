@@ -2,16 +2,13 @@ class Ball extends Component {
 	constructor(radius, poolTable, x, y,material,velocity) {
 		super();
 		this.radius = radius;
-        this.position.set(x, y, this.radius); //fix balls z ; they are swimming
-            //in the pool
+        this.position.set(x, y, this.radius);
         this.velocity = velocity;
 
         this.mass = 1;
 		this.poolTable = poolTable;
         this.addSphere(material,0,0,0,this.radius);
- 
-		//this.axes = new THREE.AxesHelper(this.radius * 5);
-        //this.add(this.axes);
+
         this.hasAxis = false;
         this.axis = new THREE.AxesHelper(3);
         this.isFalling = false;
@@ -25,18 +22,13 @@ class Ball extends Component {
             this.remove(this.axis);
     }
 
-	addShape() {
-
-		/*let ball = new Component();
-		ball.addSphere(new THREE.MeshBasicMaterial({color: "red"}),0,0,0, this.radius);
-		this.addComponent(ball,0, 0, 0);*/
-    }
     distanceToBall(ball_x, ball_y) {
         let xDistance = ball_x - this.position.x;
         let yDistance = ball_y - this.position.y;
     
         return Math.sqrt(Math.pow(xDistance,2) + Math.pow(yDistance,2));
     }
+
 	move(timeDelta) {
 		this.velocity.x *= this.poolTable.drag;
 		this.velocity.y *= this.poolTable.drag;
@@ -97,65 +89,78 @@ class Ball extends Component {
         };
     }
     
-    resolveCollision(ball, otherBall) {
-    
-        
-       let xVelocityDiff = ball.velocity.x - otherBall.velocity.x;
-        let yVelocityDiff = ball.velocity.y - otherBall.velocity.y;
-        
-    
-        let xDist = otherBall.position.x - ball.position.x;
-        let yDist = otherBall.position.y - ball.position.y;
+    resolveCollision(ball, other) {
 
         
+        let xVelocityDelta = ball.velocity.x - other.velocity.x;
+        let yVelocityDelta = ball.velocity.y - other.velocity.y;
+        
     
-            if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
-                console.log("ok");
+        let xDistance = other.position.x - ball.position.x;
+        let yDistance = other.position.y - ball.position.y;
+    
+            if (xVelocityDelta * xDistance + yVelocityDelta * yDistance >= 0) {
     
             // Angle between two balls
-            let angle = -Math.atan2(otherBall.position.y - ball.position.y, otherBall.position.x - ball.position.x);
+            let angle = -Math.atan2(other.position.y - ball.position.y, other.position.x - ball.position.x);
     
-            // Store mass in let for better readability in collision equation
-            const m1 = ball.mass;
-            const m2 = otherBall.mass;
+
+            let m1 = ball.mass;
+            let m2 = other.mass;
+                
+            //Rotates the velocity vectors to compute in 1D
+            let initialVelocity_Ball = this.rotate(ball.velocity, angle);
+            let initialVelocity_Other = this.rotate(other.velocity, angle);
     
-            // Velocity before equation
-            const u1 = this.rotate(ball.velocity, angle);
-            const u2 = this.rotate(otherBall.velocity, angle);
+            //Final velocity in 1D - Ball
+            let finalVelocity_Ball = { 
+                x: initialVelocity_Ball.x * (m1 - m2) / (m1 + m2) + initialVelocity_Other.x * 2 * m2 / (m1 + m2), 
+
+                y: initialVelocity_Ball.y };
+            
+
+            //Final velocity in 1D - Other
+            let finalVelocity_Other = {
+                x: initialVelocity_Other.x * (m1 - m2) / (m1 + m2) + initialVelocity_Ball.x * 2 * m2 / (m1 + m2), 
+                y: initialVelocity_Other.y };
     
-            // Velocity after 1d collision equation
-           const v1 = {x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y};
-           const v2 = {x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y};
+
+            //Final velocity in 2D
+            finalVelocity_Ball = this.rotate(finalVelocity_Ball, -angle);
+            finalVelocity_Other = this.rotate(finalVelocity_Other, -angle);
+            
     
-            // Final velocity after rotating axis back to original location
-               const vFinal1 = this.rotate(v1, -angle);
-            const vFinal2 = this.rotate(v2, -angle);
-    
-            // Swap particle velocities for realistic bounce effect
-            ball.velocity.x = vFinal1.x;
-            ball.velocity.y = vFinal1.y;
-    
-    
-            otherBall.velocity.x = vFinal2.x;
-            otherBall.velocity.y = vFinal2.y;
+            // Set final result
+            ball.velocity.x = finalVelocity_Ball.x;
+            ball.velocity.y = finalVelocity_Ball.y;
+
+            other.velocity.x =  finalVelocity_Other.x;
+            other.velocity.y =  finalVelocity_Other.y;
        }
     }
+
 	update(timeDelta, balls, size) {
+
         this.move(timeDelta);
+
         for (let i = 0; i < size; i++)
         {
-           // console.log("for");
+
             if (this == balls[i])
             {
-                console.log("tou aqui");
-                continue;
-                
+                continue;   
             }
          
-            if(this.distanceToBall(balls[i].position.x,balls[i].position.y) - this.radius * 2 <= 0) /*two balls have colided*/
+            if(this.distanceToBall(balls[i].position.x,balls[i].position.y)  <= this.radius * 2) /*two balls have colided*/
            {
-                console.log("colision!!");
                 this.resolveCollision(this,balls[i]);
+
+                let velocityX = this.velocity.x * timeDelta;
+                let velocityY = this.velocity.y * timeDelta;
+                this.position.x += velocityX ;
+                this.rotateY(velocityX / this.radius);
+                this.position.y += velocityY;
+                this.rotateX(-velocityY / this.radius);
                 
             }
         }
@@ -165,8 +170,4 @@ class Ball extends Component {
         
 	}
 
-	set_velocity(px,py){
-        this.velocity.x = px;
-        this.velocity.y = py;
-    }
 }
