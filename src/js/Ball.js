@@ -8,12 +8,13 @@ class Ball extends Component {
 
         this.mass = 1;
 		this.poolTable = poolTable;
-        this.ball = this.addSphere(material,0,0,0,this.radius);
+        this.addSphere(material,0,0,0,this.radius);
  
 		//this.axes = new THREE.AxesHelper(this.radius * 5);
         //this.add(this.axes);
         this.hasAxis = false;
         this.axis = new THREE.AxesHelper(3);
+        this.isFalling = false;
     }
     
     addBallAxis() {
@@ -37,38 +38,51 @@ class Ball extends Component {
         return Math.sqrt(Math.pow(xDistance,2) + Math.pow(yDistance,2));
     }
 	move(timeDelta) {
+		this.velocity.x *= this.poolTable.drag;
+		this.velocity.y *= this.poolTable.drag;
 		let velocityX = this.velocity.x * timeDelta;
-		let velocityY = this.velocity.y * timeDelta;
+        let velocityY = this.velocity.y * timeDelta;
+        let velocityZ = this.velocity.z * timeDelta;
 
-		let hasCollided = false;
-		let distance = this.poolTable.innerDepth / 2 - (Math.abs(this.position.x) + this.radius);
-		if (distance <= Math.abs(velocityX) && Math.sign(this.position.x) === Math.sign(velocityX)) {
-			// TODO: #2 Second condition can't be the way it is: if this.velocity.x > poolTable.innerDepth / 2, it fails
-			hasCollided = true;
-			this.position.x = Math.sign(this.position.x) * (this.poolTable.innerDepth / 2 - this.radius - (velocityX - distance) * this.poolTable.wallCOR);
-			this.rotateY((2 * distance - velocityX) / this.radius);
-			this.velocity.x = -this.velocity.x * this.poolTable.wallCOR;
-		}
-		distance = this.poolTable.innerWidth / 2 - (Math.abs(this.position.y) + this.radius);
-		if (distance <= Math.abs(velocityY) && Math.sign(this.position.y) === Math.sign(velocityY)) {
-			// TODO: #1 Second condition can't be the way it is: if this.velocity.y > poolTable.innerWidth / 2, it fails
-			hasCollided = true;
-			this.position.y = Math.sign(this.position.y) * (this.poolTable.innerWidth / 2 - this.radius - (velocityY - distance) * this.poolTable.wallCOR);
-			this.rotateX(-(2 * distance - velocityY) / this.radius);
-			this.velocity.y = -this.velocity.y * this.poolTable.wallCOR;
+        if (!this.isFalling) {
+            this.poolTable.holes.forEach(hole => {
+                // Each hole has 4 equidistant points from the path used to create the hole
+                // The first point has its y at the center and the second its x
+                let centerX = hole[1].x;
+                let centerY = hole[0].y;
+                if (Math.abs(this.position.x - centerX) < this.radius && Math.abs(this.position.y - centerY) < this.radius) {
+                    this.velocity.z -= 10;
+                    this.isFalling = true;
+                    return;
+                }
+            });
+            let hasCollided = false;
+            let distance = this.poolTable.innerDepth / 2 - (Math.abs(this.position.x) + this.radius);
+            if (distance <= Math.abs(velocityX) && Math.sign(this.position.x) === Math.sign(velocityX)) {
+                // TODO: #2 Second condition can't be the way it is: if this.velocity.x > poolTable.innerDepth / 2, it fails
+                hasCollided = true;
+                this.position.x = Math.sign(this.position.x) * (this.poolTable.innerDepth / 2 - this.radius - (velocityX - distance) * this.poolTable.wallCOR);
+                this.rotateY((2 * distance - velocityX) / this.radius);
+                this.velocity.x = -this.velocity.x * this.poolTable.wallCOR;
+            }
+    
+            distance = this.poolTable.innerWidth / 2 - (Math.abs(this.position.y) + this.radius);
+            if (distance <= Math.abs(velocityY) && Math.sign(this.position.y) === Math.sign(velocityY)) {
+                // TODO: #1 Second condition can't be the way it is: if this.velocity.y > poolTable.innerWidth / 2, it fails
+                hasCollided = true;
+                this.position.y = Math.sign(this.position.y) * (this.poolTable.innerWidth / 2 - this.radius - (velocityY - distance) * this.poolTable.wallCOR);
+                this.rotateX(-(2 * distance - velocityY) / this.radius);
+                this.velocity.y = -this.velocity.y * this.poolTable.wallCOR;
+            }
+    
+            if (hasCollided) {
+                return;
+            }
         }
-        if(Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01)
-        {
-            this.velocity.x = 0;
-            this.velocity.y =0;
+        else {
+            this.position.z += velocityZ;
+            this.velocity.z -= 10;
         }
-        
-        
-
-		if (hasCollided) {
-			return;
-		}
-       
 
 		this.position.x += velocityX ;
 		this.rotateY(velocityX / this.radius);
@@ -126,12 +140,12 @@ class Ball extends Component {
             otherBall.velocity.y = vFinal2.y;
        }
     }
-	update(timeDelta,balls,size) {
+	update(timeDelta, balls, size) {
         this.move(timeDelta);
-       for(i=0;i<size;i++)
+        for (let i = 0; i < size; i++)
         {
            // console.log("for");
-            if(this == balls[i])
+            if (this == balls[i])
             {
                 console.log("tou aqui");
                 continue;

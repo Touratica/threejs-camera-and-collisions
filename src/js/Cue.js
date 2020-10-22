@@ -55,7 +55,7 @@ class Cue extends Component{
 
         vector.rotateAround (center, this.angle + this.initial_angle); 
 
-        this.shooted_ball = new Ball(this.steady_ball.radius,this.pool,this.steady_ball.position.x, this.steady_ball.position.y,new THREE.MeshBasicMaterial({color: "red"}), new THREE.Vector3( vector.x * 10, vector.y * 10, 0 ));
+        this.shooted_ball = new Ball(this.steady_ball.radius,this.pool,this.steady_ball.position.x, this.steady_ball.position.y,new THREE.MeshBasicMaterial({color: "red"}), new THREE.Vector3( vector.x * 50, vector.y * 50, 0 ));
 
         this.shooted_ball.addBallAxis();
         this.shooted_ball;

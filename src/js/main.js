@@ -4,12 +4,12 @@ let camera, TopCamera/*1*/, PerspectiveCamera /*2*/ , MobileCamera /*3*/;
 
 let scene, renderer;
 let clock = new THREE.Clock();
-let cameraRatio = 24;
+let cameraRatio = 20;
 
 let cueThickness = 0.6;
-let baseFront = 1;
-let baseBack = 1.5;
-let cueHeight = 15;
+let baseFront = .5;
+let baseBack = 1;
+let cueHeight = 50;
 let numbCues = 6;
 let cue;
 
@@ -18,7 +18,7 @@ let tableDepth = 35, tableWidth = 70, tableHeight = 3;
 let wallThickness = 5;
 
 
-let ballRadius = 2;
+let ballRadius = 1;
 let numbBalls = 15;
 
 let balls = [];
@@ -43,55 +43,48 @@ function distance(x1, y1, x2, y2) {
 }
 
 function createCues(){
-	for (i=1; i<=numbCues; i++){
-		var x,y,z;
-		var angle;
+	for (let i = 1; i <= numbCues; i++) {
+		let x,y,z;
+		let angle;
 
-		if(i==1){
+		if (i === 1) {
 			x = 0;
-			y = -tableWidth/2 + (4/3)*ballRadius ; //(4/3) so the ball wont
-												// stay right next to the wall
-			z = ballRadius/2;
+			y = -tableWidth / 2 + (4 / 3) * ballRadius ; //(4/3) so the ball wont stay right next to the wall
+			z = ballRadius;
 			angle = 0;
 		}
-
-		else if (i==2){
-			x = -tableDepth/2  + (4/3)*ballRadius;
-			y = -tableWidth/4;
-			z = ballRadius/2;
-			angle = -Math.PI/2;
+		else if (i === 2) {
+			x = -tableDepth / 2  + (4 / 3) * ballRadius;
+			y = -tableWidth / 4;
+			z = ballRadius;
+			angle = -Math.PI / 2;
 		}
-
-		else if (i==3){
-			x = -tableDepth/2 + (4/3)*ballRadius;
-			y = tableWidth/4;
-			z = ballRadius/2;
-			angle = -Math.PI/2;
+		else if (i === 3) {
+			x = -tableDepth / 2 + (4 / 3) * ballRadius;
+			y = tableWidth / 4;
+			z = ballRadius;
+			angle = -Math.PI / 2;
 		}
-
-		else if (i==4){
+		else if (i === 4) {
 			x = 0;
-			y = tableWidth/2 - (4/3)*ballRadius ;
-			z = ballRadius/2;
+			y = tableWidth / 2 - (4 / 3) * ballRadius;
+			z = ballRadius;
 			angle = Math.PI;
 		}
-
-		else if (i==5){
-			x = tableDepth/2 - (4/3)*ballRadius; 
-			y = tableWidth/4;
-			z = ballRadius/2;
-			angle = Math.PI/2;
+		else if (i === 5) {
+			x = tableDepth / 2 - (4 / 3) * ballRadius;
+			y = tableWidth / 4;
+			z = ballRadius;
+			angle = Math.PI / 2;
+		}
+		else if (i === 6) {
+			x = tableDepth / 2 - (4 / 3) * ballRadius
+			y = -tableWidth / 4;
+			z = ballRadius;
+			angle = Math.PI / 2;
 		}
 
-		else if (i==6){
-			x = tableDepth/2 - (4/3)*ballRadius 
-			y = -tableWidth/4;
-			z = ballRadius/2;
-			angle = Math.PI/2;
-			
-		}
-
-		var new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight,ballRadius,wallThickness,poolTable);
+		let new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight,ballRadius,wallThickness,poolTable);
 		
 		scene.add(new_cue.get_steady_ball());
 		scene.add(new_cue);
@@ -116,15 +109,13 @@ function select_cue(n){
 function createInitialBalls() {
 	let positionX;
 	let positionY;
-	let velocity;
-	
-	for (i = 0; i < numbBalls; i++) {
+
+	for (let i = 0; i < numbBalls; i++) {
 		positionY = randFloat(-tableWidth / 2 + wallThickness + ballRadius / 2,
 			tableWidth / 2 - wallThickness - ballRadius / 2);
 		positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
 			tableDepth / 2 - wallThickness - ballRadius / 2);
-		velocity = randFloat(0,100);
-		if (i != 0) {
+		if (i !== 0) {
 			//ciclo para comparar se a nova posicao da bola nao coincide com a
 			//posicao de outra bola
 			for (let j = 0; j < balls.length; j++) {
@@ -138,7 +129,7 @@ function createInitialBalls() {
 			}
 		}
 		
-		balls[i]= new Ball(ballRadius,poolTable,positionX,positionY,ballMaterial, new THREE.Vector3( (Math.random() + 20) * 1, (Math.random() + 20) * 1, 0)) ;
+		balls[i]= new Ball(ballRadius, poolTable, positionX, positionY, ballMaterial, new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20), 0);
 		scene.add(balls[i]);
 		balls[i].addBallAxis();
 		poolTable.add(balls[i]);
@@ -147,11 +138,11 @@ function createInitialBalls() {
 
 function createCameraTop(x, y, z) {
 	// Adjusts camera ratio so the mobile is totally visible in its starting position
-	if (window.innerWidth / window.innerHeight > 2.64) {
-		cameraRatio = window.innerHeight / 25;
+	if (window.innerWidth / window.innerHeight > 1.2725) {
+		cameraRatio = window.innerHeight / 150;
 	}
 	else {
-		cameraRatio = window.innerWidth / 100;
+		cameraRatio = window.innerWidth / 190;
 	}
 	camera = new THREE.OrthographicCamera(window.innerWidth / -(2 * cameraRatio),
 		window.innerWidth / (2 * cameraRatio), window.innerHeight / (2 * cameraRatio),
@@ -163,7 +154,7 @@ function createCameraTop(x, y, z) {
 	return camera;
 }
 
-function createPerspectiveCamera(x,y,z){
+function createPerspectiveCamera(x, y, z) {
 	if (window.innerWidth / window.innerHeight > 2.64) {
 		cameraRatio = window.innerHeight / 25;
 	}
@@ -205,20 +196,13 @@ function createScene() {
 	scene = new THREE.Scene();
 	
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
-	scene.add(new THREE.AxesHelper(20));
+	scene.add(new THREE.AxesHelper(30));
 	poolTable = createTable();
 	scene.add(poolTable);
 	//camera = TopCamera;
 	createCues();
 	createInitialBalls();
 	//createBallsFixed();
-
-
-	
-	
-
-	
-	
 }
 
 function animate() {
@@ -228,39 +212,40 @@ function animate() {
 
 	let timeDelta = clock.getDelta();
 
-	if(cue.get_rotation()== "Left"){
+	if (cue.get_rotation() === "Left"){
 		cue.rotate_z(angSpeed*timeDelta);
 	}
 
-	if(cue.get_rotation()== "Right"){
+	if (cue.get_rotation() === "Right"){
 		cue.rotate_z(-angSpeed*timeDelta);
-		
 	}
 
 	if(cue.get_shoot()){
-		var e = cue.shoot_ball();
+		let e = cue.shoot_ball();
 		scene.add(e);
 		balls.push(e);
 	}
 	
 	balls.forEach(ball => ball.update(timeDelta,balls,balls.length));
 	
-	if(camera ==MobileCamera) updateMobileCamera();
+	if (camera === MobileCamera) {
+		updateMobileCamera();
+	}
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
 
-/*function onResize() {
+function onResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
 	// Adjusts camera ratio so the mobile would be totally visible in its starting position
 	if (window.innerHeight > 0 && window.innerWidth > 0) {
-		if (window.innerWidth / window.innerHeight > 2.64) {
-			cameraRatio = window.innerHeight / 25;
+		if (window.innerWidth / window.innerHeight > 1.2725) {
+			cameraRatio = window.innerHeight / 150;
 		}
 		else {
-			cameraRatio = window.innerWidth / 60;
+			cameraRatio = window.innerWidth / 190;
 		}
 		camera.left = window.innerWidth / -(2 * cameraRatio);
 		camera.right = window.innerWidth / (2 * cameraRatio);
@@ -268,20 +253,6 @@ function animate() {
 		camera.bottom = window.innerHeight / -(2 * cameraRatio);
  	}
 	camera.updateProjectionMatrix();
-
-	
-}*/
-
-function onResize() {
-	'use strict';
-
-	renderer.setSize(window.innerWidth, window.innerHeight);
-
-	if (window.innerHeight > 0 && window.innerWidth > 0) {
-
-		camera.aspect = renderer.getSize(new THREE.Vector2(0,0)).width / renderer.getSize(new THREE.Vector2(0,0)).height;
-		camera.updateProjectionMatrix();
-	}
 }
 
 function onKeyDown(e) {
@@ -334,12 +305,12 @@ function onKeyDown(e) {
 }
 
 function onKeyUp(e) {
-		switch (e.key) {
-			case "ArrowRight":
-			case "ArrowLeft":
-				cue.set_rotation("Stop");
-				break;
-		}
+	switch (e.key) {
+		case "ArrowRight":
+		case "ArrowLeft":
+			cue.set_rotation("Stop");
+			break;
+	}
 }
 
 function __init__() {
@@ -352,7 +323,7 @@ function __init__() {
 
 	createScene();
 
-	PerspectiveCamera = createPerspectiveCamera(40, 35, 30); 
+	PerspectiveCamera = createPerspectiveCamera(40, 40, 40);
 	MobileCamera = createMobileCamera();    //view from ball
 	TopCamera = createCameraTop(0, 0, 100);        //view from z
 	

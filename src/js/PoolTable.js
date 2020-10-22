@@ -9,7 +9,7 @@ class PoolTable extends Component {
 		this.outerHeight = outerHeight;
 		this.holeRadius = ballRadius * 3 / 2;
 		this.wallCOR = 0.3; // Defines the walls' coefficient of restitution
-		this.floorCOR = 0.7;
+		this.drag = 0.99;
 		this.addBase();
 		this.addFrame();
 
@@ -76,6 +76,7 @@ class PoolTable extends Component {
 		base.add(mesh);
 		
 		this.addComponent(base, 0, 0, -this.innerHeight / 2);
+		this.holes = table.getPointsHoles(2);
 	}
 	
 	addFrame() {
