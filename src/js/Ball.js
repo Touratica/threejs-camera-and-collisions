@@ -92,24 +92,42 @@ class Ball extends Component {
             y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
         };
     }
-    
-    resolveCollision(ball, other) {
 
-        
+    dot_product(ball,other){
+
+        //The other_ball is the referential
+
+        //Velocity vector from ball (direction that the ball is moving), seen from other_ball referential
         let xVelocityDelta = ball.velocity.x - other.velocity.x;
         let yVelocityDelta = ball.velocity.y - other.velocity.y;
         
-    
+        //Direction vector from other_ball to ball 
         let xDistance = other.position.x - ball.position.x;
         let yDistance = other.position.y - ball.position.y;
+
+        //If Distance vector points in the same direction as the Velocity vector, this value will be positive and we will have to resolve the collision
+        return xVelocityDelta * xDistance + yVelocityDelta * yDistance;
+    }
     
-            //condition to prevent a run over off balls
-           if (xVelocityDelta * xDistance + yVelocityDelta * yDistance >= 0) {
+    resolveCollision(ball, other) {
+
+        let xDistance = other.position.x - ball.position.x;
+        let yDistance = other.position.y - ball.position.y;
+        
+        let dot_product = this.dot_product(ball,other);
+    
+        //The dot product will be positive if the angle between both vectors is smaller than 90 degrees (if velocity vector points somewhat in the same direction of distance vector) and negative otherwise.
+
+        //Resolve collision if the balls are moving towards each other
+        //See the end of the page for further explanation
+
+           if (dot_product >= 0) { 
+
             // Angle between two balls
             let angle = -Math.atan2(yDistance, xDistance);
     
-            let m1 = ball.mass;
-            let m2 = other.mass;
+            let mBall = ball.mass;
+            let mOther = other.mass;
                 
             //Rotates the velocity vectors to compute in 1D
             let initialVelocity_Ball = this.rotate(ball.velocity, angle);
@@ -117,14 +135,14 @@ class Ball extends Component {
     
             //Final velocity in 1D - Ball
             let finalVelocity_Ball = { 
-                x: initialVelocity_Ball.x * (m1 - m2) / (m1 + m2) + initialVelocity_Other.x * 2 * m2 / (m1 + m2), 
+                x: initialVelocity_Ball.x * (mBall - mOther) / (mBall + mOther) + initialVelocity_Other.x * 2 * mOther / (mBall + mOther), 
 
                 y: initialVelocity_Ball.y };
             
 
             //Final velocity in 1D - Other
             let finalVelocity_Other = {
-                x: initialVelocity_Other.x * (m1 - m2) / (m1 + m2) + initialVelocity_Ball.x * 2 * m1 / (m1 + m2), //fixed here m1, instead of m2 
+                x: initialVelocity_Other.x * (mBall - mOther) / (mBall + mOther) + initialVelocity_Ball.x * 2 * mBall / (mBall + mOther), //fixed here m1, instead of m2 
                 y: initialVelocity_Other.y };
     
 
@@ -175,3 +193,10 @@ class Ball extends Component {
 	}
 
 }
+
+//Collisions :
+
+//If the balls are colliding but not moving towards each other, the collision will resolve itself. If we do something in that case, the collision will not resolve itself and we will make it worst (we keep changing v1 and v2 - that's what makes the balls rotate with one another).
+
+//This is only a problem when we are in a 2D space, because, in 1D space, if the balls collide with each other, the balls are necessarily moving towards each other.
+
