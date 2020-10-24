@@ -33,8 +33,11 @@ class Ball extends Component {
 
     //motion function of balls through time
 	move(timeDelta) {
+        //adds friction and slows the movement
 		this.velocity.x *= this.poolTable.drag;
-		this.velocity.y *= this.poolTable.drag;
+        this.velocity.y *= this.poolTable.drag;
+        
+        
 		let velocityX = this.velocity.x * timeDelta;
         let velocityY = this.velocity.y * timeDelta;
         let velocityZ = this.velocity.z * timeDelta;
@@ -45,23 +48,34 @@ class Ball extends Component {
                 // The first point has its y at the center and the second its x
                 let centerX = hole[1].x;
                 let centerY = hole[0].y;
+                
+                //checks if ball has entered the hole
                 if (Math.abs(this.position.x - centerX) < this.radius * 1.5 && Math.abs(this.position.y - centerY) < this.radius * 1.5) {
-                    this.velocity.z -= 10;
+                    this.velocity.z -= 20;
+
+                    this.velocity.x=0; 
+                    this.velocity.y =0;
+
                     this.isFalling = true;
                     return;
                 }
             });
             let hasCollided = false;
+
             let distance = this.poolTable.innerDepth / 2 - (Math.abs(this.position.x) + this.radius);
+            
+            //checks if the ball has colided the wall
             if (distance <= Math.abs(velocityX) && Math.sign(this.position.x) === Math.sign(velocityX)) {
                 // TODO: #2 Second condition can't be the way it is: if this.velocity.x > poolTable.innerDepth / 2, it fails
                 hasCollided = true;
                 this.position.x = Math.sign(this.position.x) * (this.poolTable.innerDepth / 2 - this.radius - (velocityX - distance) * this.poolTable.wallCOR);
+                
                 this.rotateY((2 * distance - velocityX) / this.radius);
                 this.velocity.x = -this.velocity.x * this.poolTable.wallCOR;
             }
     
             distance = this.poolTable.innerWidth / 2 - (Math.abs(this.position.y) + this.radius);
+           //checks if the ball has colided the wall
             if (distance <= Math.abs(velocityY) && Math.sign(this.position.y) === Math.sign(velocityY)) {
                 // TODO: #1 Second condition can't be the way it is: if this.velocity.y > poolTable.innerWidth / 2, it fails
                 hasCollided = true;
@@ -84,7 +98,9 @@ class Ball extends Component {
 		this.rotateY(velocityX / this.radius);
 		this.position.y += velocityY;
 		this.rotateX(-velocityY / this.radius);
-	}
+    }
+    
+
 
     rotate(velocity, angle) {
         return {
@@ -97,7 +113,8 @@ class Ball extends Component {
 
         //The other_ball is the referential
 
-        //Velocity vector from ball (direction that the ball is moving), seen from other_ball referential
+        //Velocity vector from ball (direction that the ball is moving), 
+        //seen from other_ball referential
         let xVelocityDelta = ball.velocity.x - other.velocity.x;
         let yVelocityDelta = ball.velocity.y - other.velocity.y;
         
@@ -105,7 +122,8 @@ class Ball extends Component {
         let xDistance = other.position.x - ball.position.x;
         let yDistance = other.position.y - ball.position.y;
 
-        //If Distance vector points in the same direction as the Velocity vector, this value will be positive and we will have to resolve the collision
+        //If Distance vector points in the same direction as the Velocity vector, 
+        //this value will be positive and we will have to resolve the collision
         return xVelocityDelta * xDistance + yVelocityDelta * yDistance;
     }
     
@@ -116,7 +134,9 @@ class Ball extends Component {
         
         let dot_product = this.dot_product(ball,other);
     
-        //The dot product will be positive if the angle between both vectors is smaller than 90 degrees (if velocity vector points somewhat in the same direction of distance vector) and negative otherwise.
+        //The dot product will be positive if the angle between both vectors is smaller than 
+        //90 degrees (if velocity vector points somewhat in the same direction of distance vector) 
+        //and negative otherwise.
 
         //Resolve collision if the balls are moving towards each other
         //See the end of the page for further explanation
@@ -132,10 +152,15 @@ class Ball extends Component {
             //Rotates the velocity vectors to compute in 1D
             let initialVelocity_Ball = this.rotate(ball.velocity, angle);
             let initialVelocity_Other = this.rotate(other.velocity, angle);
+
+            //Elastic colision: 
+            //v1 = [(m1-m2)/(m1+m2)] * v0(1) + 2 * [m2 / (m1+m2)] * v0(2)
+            //v2 = [(m2-m1)/(m1+m2)] * v0(2) + 2 * [m1 / (m1+m2)] * v0(1)
     
             //Final velocity in 1D - Ball
             let finalVelocity_Ball = { 
-                x: initialVelocity_Ball.x * (mBall - mOther) / (mBall + mOther) + initialVelocity_Other.x * 2 * mOther / (mBall + mOther), 
+                x:  initialVelocity_Ball.x * (mBall - mOther) / (mBall + mOther) + 
+                    initialVelocity_Other.x * 2 * mOther / (mBall + mOther), 
 
                 y: initialVelocity_Ball.y };
             
@@ -196,7 +221,10 @@ class Ball extends Component {
 
 //Collisions :
 
-//If the balls are colliding but not moving towards each other, the collision will resolve itself. If we do something in that case, the collision will not resolve itself and we will make it worst (we keep changing v1 and v2 - that's what makes the balls rotate with one another).
+//If the balls are colliding but not moving towards each other, the collision will resolve itself. 
+//If we do something in that case, the collision will not resolve itself and we will make it worst 
+//(we keep changing v1 and v2 - that's what makes the balls rotate with one another).
 
-//This is only a problem when we are in a 2D space, because, in 1D space, if the balls collide with each other, the balls are necessarily moving towards each other.
+//This is only a problem when we are in a 2D space, because, in 1D space, if the balls collide with
+// each other, the balls are necessarily moving towards each other.
 
