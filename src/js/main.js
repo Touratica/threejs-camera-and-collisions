@@ -51,7 +51,8 @@ function createCues(){
 
 		if (i === 1) {
 			x = 0;
-			y = -tableWidth / 2 + (4 / 3) * ballRadius ; //(4/3) so the ball wont stay right next to the wall
+			y = -tableWidth / 2 + (4 / 3) * ballRadius ; //(4/3) so the ball wont stay right next 
+														//to the wall
 			z = ballRadius;
 			angle = 0;
 		}
@@ -128,7 +129,7 @@ function createInitialBalls() {
 						tableWidth / 2 - wallThickness - ballRadius / 2);
 					positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
 								tableDepth / 2 - wallThickness - ballRadius / 2);
-					j -- ; //does the cicle again to check again
+					j -- ; //does the cicle again to check again the new positions
 				}
 			}
 		}
@@ -141,16 +142,18 @@ function createInitialBalls() {
 }
 
 function createCameraTop(x, y, z) {
-	// Adjusts camera ratio so the mobile is totally visible in its starting position
+	// Adjusts camera ratio so the pool is totally visible 
 	if (window.innerWidth / window.innerHeight > 1.2725) {
 		cameraRatio = window.innerHeight / 150;
 	}
 	else {
 		cameraRatio = window.innerWidth / 190;
 	}
+	/*OrthographicCamera( left, right, top, bottom, near, far )*/
 	camera = new THREE.OrthographicCamera(window.innerWidth / -(2 * cameraRatio),
 		window.innerWidth / (2 * cameraRatio), window.innerHeight / (2 * cameraRatio),
 		window.innerHeight / -(2 * cameraRatio), 0, 1000);
+
 	camera.position.x = x;
 	camera.position.y = y;
 	camera.position.z = z;
@@ -159,6 +162,9 @@ function createCameraTop(x, y, z) {
 }
 
 function createPerspectiveCamera(x, y, z) {
+	/*PerspectiveCamera( fov , aspect , near , far  )*/
+	/*fov — Camera frustum vertical field of view. 
+	aspect — Camera frustum aspect ratio.*/
 	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
 	camera.position.x = x;
 	camera.position.y = y;
@@ -176,6 +182,9 @@ function createMobileCamera(){
 	}
 
 	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
+	/*PerspectiveCamera( fov , aspect , near , far )*/
+	/*fov — Camera frustum vertical field of view. 
+	aspect — Camera frustum aspect ratio.*/
 	
 	return camera;
 }

@@ -29,36 +29,43 @@ class PoolTable extends Component {
 		hole.moveTo(-this.innerDepth / 2, -this.innerWidth / 2 + this.holeRadius);
 		hole.absarc(-this.innerDepth / 2 + this.holeRadius, -this.innerWidth / 2 + this.holeRadius, this.holeRadius, 0, 2 * Math.PI, false);
 		table.holes.push(hole);
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 		
 		// Adds top center hole
 		hole = new THREE.Path();
 		hole.moveTo(-this.innerDepth / 2, 0);
 		hole.absarc(-this.innerDepth / 2 + this.holeRadius, 0, this.holeRadius, 0, 2 * Math.PI, false);
 		table.holes.push(hole);
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 		
 		// Adds top right hole
 		hole = new THREE.Path();
 		hole.moveTo(-this.innerDepth / 2 + this.holeRadius, this.innerWidth / 2);
 		hole.absarc(-this.innerDepth / 2 + this.holeRadius, this.innerWidth / 2 - this.holeRadius, this.holeRadius, 0, 2 * Math.PI, false);
 		table.holes.push(hole);
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 		
 		// Adds bottom right hole
 		hole = new THREE.Path();
 		hole.moveTo(this.innerDepth / 2 - this.holeRadius, this.innerWidth / 2);
 		hole.absarc(this.innerDepth / 2 - this.holeRadius, this.innerWidth / 2 - this.holeRadius, this.holeRadius, 0, 2 * Math.PI, false);
 		table.holes.push(hole);
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 		
 		// Adds bottom center hole
 		hole = new THREE.Path();
 		hole.moveTo(this.innerDepth / 2, 0);
 		hole.absarc(this.innerDepth / 2 - this.holeRadius, 0, this.holeRadius, 0, 2 * Math.PI, false);
 		table.holes.push(hole);
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 		
 		// Adds bottom left hole
 		hole = new THREE.Path();
 		hole.moveTo(this.innerDepth / 2, -this.innerWidth / 2 + this.holeRadius);
 		hole.absarc( this.innerDepth / 2 - this.holeRadius, -this.innerWidth / 2 + this.holeRadius, this.holeRadius, 0, 2 * Math.PI, false );
 		table.holes.push(hole);
+		
+		//absarc ( x , y, radius, startAngle, endAngle, clockwise ) 
 
 		// Extrude the shape into a geometry, and create a mesh from it:
 		let extrudeSettings = {
