@@ -83,6 +83,8 @@ class PoolTable extends Component {
 		base.add(mesh);
 		
 		this.addComponent(base, 0, 0, -this.innerHeight / 2);
+		
+		//returns the points of the outer edge of the hole
 		this.holes = table.getPointsHoles(2);
 	}
 	

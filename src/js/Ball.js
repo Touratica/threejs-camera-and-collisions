@@ -53,8 +53,6 @@ class Ball extends Component {
                 if (Math.abs(this.position.x - centerX) < this.radius * 1.5 && Math.abs(this.position.y - centerY) < this.radius * 1.5) {
                     this.velocity.z -= 20;
 
-                    this.velocity.x=0; 
-                    this.velocity.y =0;
 
                     this.isFalling = true;
                     return;
@@ -66,8 +64,11 @@ class Ball extends Component {
             
             //checks if the ball has colided the wall
             if (distance <= Math.abs(velocityX) && Math.sign(this.position.x) === Math.sign(velocityX)) {
-                // TODO: #2 Second condition can't be the way it is: if this.velocity.x > poolTable.innerDepth / 2, it fails
                 hasCollided = true;
+
+                //when the velocity of the ball is higher than the distance to the wall
+                //the ball will be positionated at position where it should be if the ball
+                //hitted the ball and returned back
                 this.position.x = Math.sign(this.position.x) * (this.poolTable.innerDepth / 2 - this.radius - (velocityX - distance) * this.poolTable.wallCOR);
                 
                 this.rotateY((2 * distance - velocityX) / this.radius);
@@ -77,7 +78,7 @@ class Ball extends Component {
             distance = this.poolTable.innerWidth / 2 - (Math.abs(this.position.y) + this.radius);
            //checks if the ball has colided the wall
             if (distance <= Math.abs(velocityY) && Math.sign(this.position.y) === Math.sign(velocityY)) {
-                // TODO: #1 Second condition can't be the way it is: if this.velocity.y > poolTable.innerWidth / 2, it fails
+                
                 hasCollided = true;
                 this.position.y = Math.sign(this.position.y) * (this.poolTable.innerWidth / 2 - this.radius - (velocityY - distance) * this.poolTable.wallCOR);
                 this.rotateX(-(2 * distance - velocityY) / this.radius);
