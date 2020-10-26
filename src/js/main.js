@@ -1,6 +1,4 @@
-/*global THREE*/
-
-let camera, TopCamera/*1*/, PerspectiveCamera /*2*/ , MobileCamera /*3*/;
+let camera, TopCamera/*1*/, PerspectiveCamera /*2*/, MobileCamera /*3*/;
 
 let scene, renderer;
 let clock = new THREE.Clock();
@@ -31,12 +29,12 @@ THREE.Object3D.DefaultUp.set(0, 0, 1);
 
 let ballMaterial = new THREE.MeshBasicMaterial({color: "red"});
 
-//function to generate random numbers
+// Generates a random number within a range
 function randFloat(low, high) {
-	return low + Math.random() * ( high - low );
+	return low + Math.random() * (high - low);
 }
 
-//distance between two points
+// Gets distance between two points
 function distance(x1, y1, x2, y2) {
 	let xDistance = x2 - x1;
 	let yDistance = y2 - y1;
@@ -44,15 +42,14 @@ function distance(x1, y1, x2, y2) {
 	return Math.sqrt(Math.pow(xDistance,2) + Math.pow(yDistance,2));
 }
 
-function createCues(){
+function createCues() {
 	for (let i = 1; i <= numbCues; i++) {
-		let x,y,z;
+		let x, y, z;
 		let angle;
 
 		if (i === 1) {
 			x = 0;
-			y = -tableWidth / 2 + (4 / 3) * ballRadius ; //(4/3) so the ball wont stay right next 
-														//to the wall
+			y = -tableWidth / 2 + (4 / 3) * ballRadius ; // (4/3) so the ball wont stay right next to the wall
 			z = ballRadius;
 			angle = 0;
 		}
@@ -89,7 +86,7 @@ function createCues(){
 
 		let new_cue = new Cue(x, y, z,angle,baseFront,baseBack,cueHeight,ballRadius,wallThickness,poolTable);
 		
-		//scene.add(new_cue.get_steady_ball());
+		// scene.add(new_cue.get_steady_ball());
 		scene.add(new_cue);
 		cues.push(new_cue);
 	}
@@ -103,7 +100,7 @@ function createTable() {
 	return new PoolTable(0, 0, 0, tableDepth, tableWidth, tableHeight, wallThickness, ballRadius);
 }
 
-function select_cue(n){
+function select_cue(n) {
 	cue.unselect();
 	cue = cues[n];
 	cue.select();
@@ -121,20 +118,19 @@ function createInitialBalls() {
 			tableDepth / 2  - ballRadius / 2);
 
 			if (i !== 0) {
-			
-			//cicle to compare if the new position of the ball is not the same as other ball
+			// For loop to compare if the new position of the ball is not the same as other ball
 			for (let j = 0; j < balls.length; j++) {
 				if (distance(positionX, positionY, balls[j].position.x, balls[j].position.y) < ballRadius * 2) {
 					positionY = randFloat(-tableWidth / 2 + wallThickness + ballRadius / 2,
 						tableWidth / 2 - wallThickness - ballRadius / 2);
 					positionX = randFloat(-tableDepth / 2 + wallThickness + ballRadius / 2,
 								tableDepth / 2 - wallThickness - ballRadius / 2);
-					j -- ; //does the cicle again to check again the new positions
+					j --; //does the cicle again to check again the new positions
 				}
 			}
 		}
 		
-		balls[i]= new Ball(ballRadius, poolTable, positionX, positionY, ballMaterial, new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20), 0);
+		balls[i] = new Ball(ballRadius, poolTable, positionX, positionY, ballMaterial, new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20), 0);
 		scene.add(balls[i]);
 		balls[i].addBallAxis();
 		poolTable.add(balls[i]);
@@ -162,10 +158,10 @@ function createCameraTop(x, y, z) {
 }
 
 function createPerspectiveCamera(x, y, z) {
-	/*PerspectiveCamera( fov , aspect , near , far  )*/
-	/*fov — Camera frustum vertical field of view. 
+	/* PerspectiveCamera(fov, aspect, near, far)
+	fov — Camera frustum vertical field of view. 
 	aspect — Camera frustum aspect ratio.*/
-	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
+	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight, 1, 2000);
 	camera.position.x = x;
 	camera.position.y = y;
 	camera.position.z = z;
@@ -181,18 +177,18 @@ function createMobileCamera(){
 		cameraRatio = window.innerWidth / 120;
 	}
 
-	camera = new THREE.PerspectiveCamera(70,innerWidth / innerHeight,1,2000);
-	/*PerspectiveCamera( fov , aspect , near , far )*/
-	/*fov — Camera frustum vertical field of view. 
+	camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 1, 2000);
+	/* PerspectiveCamera(fov, aspect, near, far)
+	fov — Camera frustum vertical field of view. 
 	aspect — Camera frustum aspect ratio.*/
 	
 	return camera;
 }
-/*mobile camera that follows shooted ball*/
+// Movable camera that follows shooted ball
 function updateMobileCamera(){
 	camera.position.x = cue.get_ball_shooted().position.x - ballRadius;
 	camera.position.y = cue.get_ball_shooted().position.y - ballRadius;
-	camera.position.z = cue.get_ball_shooted().position.z + ballRadius/2;
+	camera.position.z = cue.get_ball_shooted().position.z + ballRadius / 2;
 
     camera.lookAt(cue.get_ball_shooted().position);
 }
@@ -202,13 +198,12 @@ function createScene() {
 	scene = new THREE.Scene();
 	
 	// Adds axes to the scene: x-axis is red, y-axis is green, z-axis is blue
-	//scene.add(new THREE.AxesHelper(30));
+	// scene.add(new THREE.AxesHelper(30));
 	poolTable = createTable();
 	scene.add(poolTable);
 
 	createCues();
 	createInitialBalls();
-
 }
 
 function animate() {
@@ -218,21 +213,21 @@ function animate() {
 
 	let timeDelta = clock.getDelta();
 
-	if (cue.get_rotation() === "Left"){
-		cue.rotate_z(angSpeed*timeDelta);
+	if (cue.get_rotation() === "Left") {
+		cue.rotate_z(angSpeed * timeDelta);
 	}
 
-	if (cue.get_rotation() === "Right"){
-		cue.rotate_z(-angSpeed*timeDelta);
+	if (cue.get_rotation() === "Right") {
+		cue.rotate_z(-angSpeed * timeDelta);
 	}
 
-	if(cue.get_shoot()){
+	if (cue.get_shoot()) {
 		let e = cue.shoot_ball();
 		scene.add(e);
 		balls.push(e);
 	}
 	
-	balls.forEach(ball => ball.update(timeDelta,balls,balls.length));
+	balls.forEach(ball => ball.update(timeDelta, balls, balls.length));
 	
 	if (camera === MobileCamera) {
 		updateMobileCamera();
@@ -300,16 +295,14 @@ function onKeyDown(e) {
 			break;
 
 		case "ArrowRight":
-			
 			cue.set_rotation("Right");
-			
 			break;
 
 		case "ArrowLeft":
 			cue.set_rotation("Left");
 			break;
 
-		case " ":
+		case " ":	// Space character
 			cue.set_shoot(true);
 			break;
 	}
@@ -325,7 +318,6 @@ function onKeyUp(e) {
 }
 
 function __init__() {
-	'use strict';
 	renderer = new THREE.WebGLRenderer({antialias: true});
 	renderer.setClearColor(0xffffff);
 	renderer.setSize(window.innerWidth, window.innerHeight);
