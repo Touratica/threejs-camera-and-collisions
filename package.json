@@ -4,9 +4,9 @@
   "description": "A project developed around the Three.js 3D library, exploring the concepts moving cameras and collisions.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
     "start": "webpack serve --open --config webpack.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
   "repository": {
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/Touratica/threejs-camera-and-collisions#readme",
   "dependencies": {
-    "three": "0.121.1"
+    "three": "^0.142.0"
   },
   "devDependencies": {
     "css-loader": "^6.7.1",
